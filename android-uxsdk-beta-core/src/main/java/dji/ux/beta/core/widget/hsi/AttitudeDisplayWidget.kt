@@ -2,13 +2,16 @@ package dji.ux.beta.core.widget.hsi
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.LinearLayout
 import dji.common.flightcontroller.LocationCoordinate3D
 import dji.ux.beta.core.R
 import dji.ux.beta.core.base.DJISDKModel
 import dji.ux.beta.core.base.SchedulerProvider
 import dji.ux.beta.core.base.widget.ConstraintLayoutWidget
 import dji.ux.beta.core.communication.ObservableInMemoryKeyedStore
+import dji.ux.beta.core.databinding.UxsdkLiveviewPfdAttitudeDisplayWidgetBinding
 import dji.ux.beta.core.util.GpsUtils
 import dji.ux.beta.core.util.UnitUtils
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -17,11 +20,9 @@ import io.reactivex.rxjava3.core.Flowable
 import io.reactivex.rxjava3.core.FlowableEmitter
 import io.reactivex.rxjava3.core.Scheduler
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.uxsdk_liveview_pfd_attitude_display_widget.view.*
 import java.lang.Double.NaN
 import java.util.*
 import kotlin.math.abs
-
 /**
  * Class Description
  *
@@ -35,6 +36,8 @@ open class AttitudeDisplayWidget @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayoutWidget<AttitudeDisplayWidget.ModelState>(context, attrs, defStyleAttr) {
+
+    private lateinit var binding: UxsdkLiveviewPfdAttitudeDisplayWidgetBinding
 
     private val widgetModel by lazy {
         AttitudeDisplayModel(DJISDKModel.getInstance(), ObservableInMemoryKeyedStore.getInstance())
@@ -61,7 +64,9 @@ open class AttitudeDisplayWidget @JvmOverloads constructor(
     private var mDroneLocation: LocationCoordinate3D? = null
 
     open fun loadLayout() {
-        View.inflate(context, R.layout.uxsdk_liveview_pfd_attitude_display_widget, this)
+//        uxsdk_liveview_pfd_attitude_display_widget
+        val inflater = LayoutInflater.from(this.context)
+        binding = UxsdkLiveviewPfdAttitudeDisplayWidgetBinding.inflate(inflater,this)
     }
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
@@ -71,7 +76,7 @@ open class AttitudeDisplayWidget @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!isInEditMode) {
-            pfd_attitude_dash_board.setModel(widgetModel)
+            binding.pfdAttitudeDashBoard.setModel(widgetModel)
             widgetModel.setup()
         }
     }
@@ -122,7 +127,7 @@ open class AttitudeDisplayWidget @JvmOverloads constructor(
         val lon: Double = mDroneLocation?.longitude ?: NaN
         val aslValue: Double = GpsUtils.egm96Altitude((mHomePointAltitude + mAltitude).toDouble(), lat, lon)
         val value: Float = UnitUtils.getValueFromMetricByLength(aslValue.toFloat(), if (UnitUtils.isMetricUnits()) UnitUtils.UnitType.METRIC else UnitUtils.UnitType.IMPERIAL)
-        pfd_asl_value.text = String.format(Locale.US, "%06.1f", value)
+        binding.pfdAslText.text = String.format(Locale.US, "%06.1f", value)
     }
 
     private fun updateSpeed() {
@@ -131,7 +136,7 @@ open class AttitudeDisplayWidget @JvmOverloads constructor(
             showSpeedZ = -mSpeedZ
         }
         val value: Float = UnitUtils.transFormSpeedIntoDifferentUnit(showSpeedZ)
-        pfd_vs_value.text = String.format(Locale.US, "%03.1f", value)
+        binding.pfdVsValue.text = String.format(Locale.US, "%03.1f", value)
     }
 
     sealed class ModelState

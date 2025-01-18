@@ -2,9 +2,11 @@ package dji.ux.beta.cameracore.widget.cameracontrols.exposuresettings
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import dji.common.camera.SettingsDefinitions
 import dji.ux.beta.cameracore.R
+import dji.ux.beta.cameracore.databinding.UxsdkWidgetExposureModeSettingBinding
 import dji.ux.beta.core.base.DJISDKModel
 import dji.ux.beta.core.base.ICameraIndex
 import dji.ux.beta.core.base.SchedulerProvider
@@ -13,7 +15,6 @@ import dji.ux.beta.core.communication.ObservableInMemoryKeyedStore
 import dji.ux.beta.core.util.RxUtil
 import dji.ux.beta.core.util.SettingDefinitions
 import io.reactivex.rxjava3.functions.Action
-import kotlinx.android.synthetic.main.uxsdk_widget_exposure_mode_setting.view.*
 
 /**
  * Class Description
@@ -29,13 +30,20 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : ConstraintLayoutWidget<ExposureModeSettingWidget.ModelState>(context, attrs, defStyleAttr),
     View.OnClickListener, ICameraIndex {
+    //        uxsdk_widget_exposure_mode_setting
+    private lateinit var binding: UxsdkWidgetExposureModeSettingBinding
 
     private val widgetModel by lazy {
-        ExposureModeSettingModel(DJISDKModel.getInstance(), ObservableInMemoryKeyedStore.getInstance())
+        ExposureModeSettingModel(
+            DJISDKModel.getInstance(),
+            ObservableInMemoryKeyedStore.getInstance()
+        )
     }
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
-        View.inflate(context, R.layout.uxsdk_widget_exposure_mode_setting, this)
+//        View.inflate(context, R.layout.uxsdk_widget_exposure_mode_setting, this)
+        val inflater = LayoutInflater.from(context)
+        binding = UxsdkWidgetExposureModeSettingBinding.inflate(inflater,this)
     }
 
     override fun onAttachedToWindow() {
@@ -43,11 +51,11 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
         if (!isInEditMode) {
             widgetModel.setup()
         }
-        layout_camera_mode_a.setOnClickListener(this)
-        layout_camera_mode_s.setOnClickListener(this)
-        layout_camera_mode_m.setOnClickListener(this)
-        layout_camera_mode_p.setOnClickListener(this)
-        layout_camera_mode_p.isSelected = true
+        binding.layoutCameraModeA.setOnClickListener(this)
+        binding.layoutCameraModeS.setOnClickListener(this)
+        binding.layoutCameraModeM.setOnClickListener(this)
+        binding.layoutCameraModeP.setOnClickListener(this)
+        binding.layoutCameraModeP.isSelected = true
     }
 
     override fun onDetachedFromWindow() {
@@ -61,15 +69,22 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
 
     override fun getLensType() = widgetModel.getLensType()
 
-    override fun updateCameraSource(cameraIndex: SettingDefinitions.CameraIndex, lensType: SettingsDefinitions.LensType) = widgetModel.updateCameraSource(cameraIndex, lensType)
+    override fun updateCameraSource(
+        cameraIndex: SettingDefinitions.CameraIndex,
+        lensType: SettingsDefinitions.LensType
+    ) = widgetModel.updateCameraSource(cameraIndex, lensType)
 
     override fun reactToModelChanges() {
-        addReaction(widgetModel.exposureModeProcessor.toFlowable().observeOn(SchedulerProvider.ui()).subscribe {
-            updateExposureMode(it)
-        })
-        addReaction(widgetModel.exposureModeRangeProcessor.toFlowable().observeOn(SchedulerProvider.ui()).subscribe {
-            updateExposureModeRange(it)
-        })
+        addReaction(
+            widgetModel.exposureModeProcessor.toFlowable().observeOn(SchedulerProvider.ui())
+                .subscribe {
+                    updateExposureMode(it)
+                })
+        addReaction(
+            widgetModel.exposureModeRangeProcessor.toFlowable().observeOn(SchedulerProvider.ui())
+                .subscribe {
+                    updateExposureModeRange(it)
+                })
     }
 
     override fun getIdealDimensionRatioString(): String? {
@@ -78,13 +93,19 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
 
     override fun onClick(v: View?) {
 
-        val previousExposureMode: SettingsDefinitions.ExposureMode = widgetModel.exposureModeProcessor.value
-        var exposureMode: SettingsDefinitions.ExposureMode = SettingsDefinitions.ExposureMode.UNKNOWN
+        val previousExposureMode: SettingsDefinitions.ExposureMode =
+            widgetModel.exposureModeProcessor.value
+        var exposureMode: SettingsDefinitions.ExposureMode =
+            SettingsDefinitions.ExposureMode.UNKNOWN
 
         when (v?.id) {
             R.id.layout_camera_mode_p -> exposureMode = SettingsDefinitions.ExposureMode.PROGRAM
-            R.id.layout_camera_mode_a -> exposureMode = SettingsDefinitions.ExposureMode.APERTURE_PRIORITY
-            R.id.layout_camera_mode_s -> exposureMode = SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY
+            R.id.layout_camera_mode_a -> exposureMode =
+                SettingsDefinitions.ExposureMode.APERTURE_PRIORITY
+
+            R.id.layout_camera_mode_s -> exposureMode =
+                SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY
+
             R.id.layout_camera_mode_m -> exposureMode = SettingsDefinitions.ExposureMode.MANUAL
         }
 
@@ -104,23 +125,31 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
     }
 
     private fun updateExposureModeRange(range: Array<SettingsDefinitions.ExposureMode>) {
-        layout_camera_mode_a.isEnabled = rangeContains(range, SettingsDefinitions.ExposureMode.APERTURE_PRIORITY)
-        layout_camera_mode_s.isEnabled = rangeContains(range, SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY)
-        layout_camera_mode_m.isEnabled = rangeContains(range, SettingsDefinitions.ExposureMode.MANUAL)
-        layout_camera_mode_p.isEnabled = rangeContains(range, SettingsDefinitions.ExposureMode.PROGRAM)
+        binding.layoutCameraModeA.isEnabled =
+            rangeContains(range, SettingsDefinitions.ExposureMode.APERTURE_PRIORITY)
+        binding.layoutCameraModeS.isEnabled =
+            rangeContains(range, SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY)
+        binding.layoutCameraModeM.isEnabled =
+            rangeContains(range, SettingsDefinitions.ExposureMode.MANUAL)
+        binding.layoutCameraModeP.isEnabled =
+            rangeContains(range, SettingsDefinitions.ExposureMode.PROGRAM)
     }
 
     private fun updateExposureMode(mode: SettingsDefinitions.ExposureMode) {
-        layout_camera_mode_a.isSelected = false
-        layout_camera_mode_s.isSelected = false
-        layout_camera_mode_m.isSelected = false
-        layout_camera_mode_p.isSelected = false
+        binding.layoutCameraModeA.isSelected = false
+        binding.layoutCameraModeS.isSelected = false
+        binding.layoutCameraModeM.isSelected = false
+        binding.layoutCameraModeP.isSelected = false
 
         when (mode) {
-            SettingsDefinitions.ExposureMode.PROGRAM -> layout_camera_mode_p.isSelected = true
-            SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY -> layout_camera_mode_s.isSelected = true
-            SettingsDefinitions.ExposureMode.APERTURE_PRIORITY -> layout_camera_mode_a.isSelected = true
-            SettingsDefinitions.ExposureMode.MANUAL -> layout_camera_mode_m.isSelected = true
+            SettingsDefinitions.ExposureMode.PROGRAM -> binding.layoutCameraModeP.isSelected = true
+            SettingsDefinitions.ExposureMode.SHUTTER_PRIORITY -> binding.layoutCameraModeS.isSelected =
+                true
+
+            SettingsDefinitions.ExposureMode.APERTURE_PRIORITY -> binding.layoutCameraModeA.isSelected =
+                true
+
+            SettingsDefinitions.ExposureMode.MANUAL -> binding.layoutCameraModeM.isSelected = true
             else -> {
             }
         }
@@ -130,7 +159,10 @@ open class ExposureModeSettingWidget @JvmOverloads constructor(
         updateExposureMode(widgetModel.exposureModeProcessor.value)
     }
 
-    private fun rangeContains(range: Array<SettingsDefinitions.ExposureMode>?, value: SettingsDefinitions.ExposureMode): Boolean {
+    private fun rangeContains(
+        range: Array<SettingsDefinitions.ExposureMode>?,
+        value: SettingsDefinitions.ExposureMode
+    ): Boolean {
         if (range == null) {
             return false
         }

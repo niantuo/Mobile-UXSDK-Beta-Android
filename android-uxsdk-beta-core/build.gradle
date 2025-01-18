@@ -23,23 +23,30 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
 
 android {
     lintOptions {
         abortOnError = false
     }
-    compileSdkVersion 31
+    buildFeatures{
+        viewBinding true
+        dataBinding = true
+    }
+    compileSdkVersion 34
     publishNonDefault true
     resourcePrefix "uxsdk_"
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 34
         versionCode 1
         versionName "5.0"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    viewBinding{
+        enabled = true
     }
     buildTypes {
         release {
@@ -68,7 +75,7 @@ android {
 }
 
 dependencies {
-    api ('com.dji:dji-sdk:4.16.4', {
+    api ( libs.dji.sdk.v4, {
         /**
          * Comment the "library-anti-distortion" if your app needs Anti Distortion for Mavic 2 Pro
          * and Mavic 2 Zoom.
@@ -79,23 +86,22 @@ dependencies {
          */
         exclude module: 'library-anti-distortion'
     })
-    compileOnly ('com.dji:dji-sdk-provided:4.16.4')
+    compileOnly libs.dji.sdk.v4.provide
 
-    implementation 'androidx.multidex:multidex:2.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'androidx.media:media:1.0.0'
+    implementation libs.androidx.multidex
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.annotation
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.media
 
-    api 'me.drakeet.support:toastcompat:1.1.0'
+    api libs.toastcompat
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api "androidx.core:core-ktx:1.1.0"
-
-    api 'io.reactivex.rxjava3:rxandroid:3.0.0'
-    api 'io.reactivex.rxjava3:rxjava:3.0.0'
+    implementation libs.kotlin.jdk7
+    api libs.androidx.core.ktx
+    api libs.rxjava3.rxandroid
+    api libs.rxjava3.rxjava
 }
 repositories {
     mavenLocal()

@@ -33,6 +33,7 @@ import dji.keysdk.RemoteControllerKey
 import io.reactivex.rxjava3.functions.Consumer
 import io.reactivex.rxjava3.core.Flowable
 import dji.ux.beta.core.base.DJISDKModel
+import dji.ux.beta.core.base.UXSDKErrorWrap
 import dji.ux.beta.core.base.WidgetModel
 import dji.ux.beta.core.communication.GlobalPreferenceKeys
 import dji.ux.beta.core.communication.GlobalPreferencesInterface
@@ -143,7 +144,7 @@ class TakeOffWidgetModel(djiSdkModel: DJISDKModel,
                     if (areMotorsOnDataProcessor.value) {
                         return@onErrorResumeNext Completable.complete()
                     } else {
-                        return@onErrorResumeNext Completable.error(error)
+                        return@onErrorResumeNext Completable.error(UXSDKErrorWrap(error))
                     }
                 }
     }
@@ -158,7 +159,7 @@ class TakeOffWidgetModel(djiSdkModel: DJISDKModel,
                     if (areMotorsOnDataProcessor.value) {
                         return@onErrorResumeNext Completable.complete()
                     } else {
-                        return@onErrorResumeNext Completable.error(error)
+                        return@onErrorResumeNext Completable.error(UXSDKErrorWrap(error))
                     }
                 }
     }

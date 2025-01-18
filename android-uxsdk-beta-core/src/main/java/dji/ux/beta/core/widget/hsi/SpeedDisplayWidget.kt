@@ -2,6 +2,7 @@ package dji.ux.beta.core.widget.hsi
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.AlphaAnimation
@@ -13,8 +14,9 @@ import dji.ux.beta.core.base.DJISDKModel
 import dji.ux.beta.core.base.SchedulerProvider
 import dji.ux.beta.core.base.widget.ConstraintLayoutWidget
 import dji.ux.beta.core.communication.ObservableInMemoryKeyedStore
+import dji.ux.beta.core.databinding.UxsdkLiveviewPfdSpeedDisplayWidgetBinding
+import dji.ux.beta.core.databinding.UxsdkPrimaryFlightDisplayWidgetBinding
 import dji.ux.beta.core.util.UnitUtils
-import kotlinx.android.synthetic.main.uxsdk_liveview_pfd_speed_display_widget.view.*
 import java.util.*
 
 /**
@@ -30,6 +32,8 @@ open class SpeedDisplayWidget @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : ConstraintLayoutWidget<SpeedDisplayWidget.ModelState>(context, attrs, defStyleAttr) {
+
+    private lateinit var binding: UxsdkLiveviewPfdSpeedDisplayWidgetBinding
 
     private val widgetModel by lazy {
         SpeedDisplayModel(DJISDKModel.getInstance(), ObservableInMemoryKeyedStore.getInstance())
@@ -64,7 +68,9 @@ open class SpeedDisplayWidget @JvmOverloads constructor(
     }
 
     open fun loadLayout() {
-        View.inflate(context, R.layout.uxsdk_liveview_pfd_speed_display_widget, this)
+//        View.inflate(context, R.layout.uxsdk_liveview_pfd_speed_display_widget, this)
+        val inflater = LayoutInflater.from(context)
+        binding = UxsdkLiveviewPfdSpeedDisplayWidgetBinding.inflate(inflater,this)
     }
 
     override fun reactToModelChanges() {
@@ -93,7 +99,7 @@ open class SpeedDisplayWidget @JvmOverloads constructor(
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         if (!isInEditMode) {
-            pfd_speed_dash_board.setModel(widgetModel)
+            binding.pfdSpeedDashBoard.setModel(widgetModel)
             widgetModel.setup()
         }
     }
@@ -108,22 +114,22 @@ open class SpeedDisplayWidget @JvmOverloads constructor(
     private fun updateWindStatus(windSpeed: Float, windDirection: WindDirection, windWarning: FlightWindWarning, aircraftDegree: Float) {
         val value: Float = UnitUtils.transFormSpeedIntoDifferentUnit(windSpeed)
         val textStr = String.format(Locale.ENGLISH, "WS %04.1f %s", value, getWindDirectionText(windDirection, aircraftDegree))
-        if (textStr != pfd_ws_value.text.toString()) {
-            pfd_ws_value.text = textStr
+        if (textStr != binding.pfdWsValue.text.toString()) {
+            binding.pfdWsValue.text = textStr
         }
 
         when (windWarning) {
-            FlightWindWarning.LEVEL_1 -> pfd_ws_value.setTextColor(resources.getColor(R.color.uxsdk_pfd_avoidance_color))
-            FlightWindWarning.LEVEL_2 -> pfd_ws_value.setTextColor(resources.getColor(R.color.uxsdk_pfd_barrier_color))
-            else -> pfd_ws_value.setTextColor(resources.getColor(R.color.uxsdk_pfd_main_color))
+            FlightWindWarning.LEVEL_1 -> binding.pfdWsValue.setTextColor(resources.getColor(R.color.uxsdk_pfd_avoidance_color))
+            FlightWindWarning.LEVEL_2 -> binding.pfdWsValue.setTextColor(resources.getColor(R.color.uxsdk_pfd_barrier_color))
+            else -> binding.pfdWsValue.setTextColor(resources.getColor(R.color.uxsdk_pfd_main_color))
         }
 
         val shouldBlink = windWarning === FlightWindWarning.LEVEL_2
         // 红色需要持续闪烁
         if (shouldBlink && !mIsAnimating) {
-            pfd_ws_value.startAnimation(mAnimation)
+            binding.pfdWsValue.startAnimation(mAnimation)
         } else if (!shouldBlink && mIsAnimating) {
-            pfd_ws_value.clearAnimation()
+            binding.pfdWsValue.clearAnimation()
         }
     }
 

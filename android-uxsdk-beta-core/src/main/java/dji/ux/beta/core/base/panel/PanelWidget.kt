@@ -66,7 +66,7 @@ import dji.ux.beta.core.util.ViewUtil
  *
  * @param panelWidgetConfiguration * The default [PanelWidgetConfiguration].
  */
-abstract class PanelWidget<S, T> @JvmOverloads constructor(
+abstract class PanelWidget<S, T : Any> @JvmOverloads constructor(
         context: Context,
         attrs: AttributeSet? = null,
         defStyleAttr: Int = 0,

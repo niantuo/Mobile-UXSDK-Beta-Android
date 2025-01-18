@@ -38,3 +38,12 @@ data class UXSDKError(
         return djiError.toString()
     }
 }
+
+data class UXSDKErrorWrap(val err: Throwable?): Throwable(){
+
+    override fun toString(): String {
+        return err?.let {
+            return err.toString()
+        } ?: "unknown error"
+    }
+}

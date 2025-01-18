@@ -23,18 +23,17 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     lintOptions {
         abortOnError = false
     }
-    compileSdkVersion 31
+    compileSdkVersion 34
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.dji.ux.beta.sample"
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 34
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         ndk {
@@ -42,6 +41,9 @@ android {
             // above, FFmpeg lib might lead to runtime crashes or warnings.
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
+    }
+    viewBinding{
+        enabled = true
     }
     buildTypes {
         release {
@@ -93,13 +95,16 @@ android {
 }
 
 dependencies {
-    compileOnly ('com.dji:dji-sdk-provided:4.16.4')
+    compileOnly libs.dji.sdk.v4.provide
 
-    // UXSDK dependencies
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.core:core:1.0.0'
-    implementation "androidx.core:core-ktx:1.1.0"
+    implementation libs.androidx.multidex
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.annotation
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.recyclerview
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.media
+    implementation libs.kotlin.jdk7
 
     // UXSDK map dependencies: Only include dependencies for map providers that are used in your app
     // Amap: Do not include if publishing to Google Play Store
@@ -109,19 +114,19 @@ dependencies {
     // HERE maps
     implementation files('libs/HERE-sdk-3.15.0.aar')
     // Mapbox
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.2.0'
+    implementation libs.mapbox.android.sdk
+
+    // SDK dependencies
+    implementation libs.androidx.lifecycle.extensions
+
+
+
     // Google maps
     implementation 'com.google.android.gms:play-services-base:16.0.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation 'com.google.android.gms:play-services-places:16.0.0'
 
-    // SDK dependencies
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0-rc01'
-    implementation 'androidx.multidex:multidex:2.0.1'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Sample app dependencies
     implementation 'com.jakewharton:butterknife:10.0.0'

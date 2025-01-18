@@ -186,6 +186,13 @@ open class TravelModeListItemWidget @JvmOverloads constructor(
                         TravelModeState.Active -> {
                             exitTravelMode()
                         }
+
+                        TravelModeState.NotSupported -> {
+
+                        }
+                        TravelModeState.ProductDisconnected -> {
+
+                        }
                     }
                 }, { }))
 

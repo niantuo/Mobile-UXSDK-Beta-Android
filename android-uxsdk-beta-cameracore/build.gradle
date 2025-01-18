@@ -23,19 +23,21 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
     lintOptions {
         abortOnError = false
     }
-    compileSdkVersion 31
+    viewBinding{
+        enabled = true
+    }
+    compileSdkVersion 34
     publishNonDefault true
     resourcePrefix "uxsdk_"
     defaultConfig {
         minSdkVersion 23
-        targetSdkVersion 31
+        targetSdkVersion 34
         versionCode 1
         versionName "4.5"
         vectorDrawables.useSupportLibrary = true
@@ -69,16 +71,16 @@ android {
 
 dependencies {
     api project(path: ':android-uxsdk-beta-core')
-    compileOnly ('com.dji:dji-sdk-provided:4.16.4')
+    compileOnly libs.dji.sdk.v4.provide
 
-    implementation 'androidx.multidex:multidex:2.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
-    implementation 'androidx.annotation:annotation:1.0.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.2'
-    implementation 'androidx.media:media:1.0.0'
+    implementation libs.androidx.multidex
+    implementation libs.androidx.appcompat
+    implementation libs.androidx.annotation
+    implementation libs.androidx.legacy.support.v4
+    implementation libs.androidx.constraintlayout
+    implementation libs.androidx.media
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation libs.kotlin.jdk7
 }
 repositories {
     mavenLocal()

@@ -2,19 +2,19 @@ package dji.ux.beta.cameracore.widget.cameracontrols.lenscontrol
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import dji.common.camera.CameraVideoStreamSource
 import dji.common.camera.SettingsDefinitions
 import dji.ux.beta.cameracore.R
+import dji.ux.beta.cameracore.databinding.UxsdkCameraLensControlWidgetBinding
 import dji.ux.beta.core.base.DJISDKModel
 import dji.ux.beta.core.base.ICameraIndex
 import dji.ux.beta.core.base.SchedulerProvider.ui
 import dji.ux.beta.core.base.widget.ConstraintLayoutWidget
 import dji.ux.beta.core.communication.ObservableInMemoryKeyedStore
 import dji.ux.beta.core.util.SettingDefinitions
-import kotlinx.android.synthetic.main.uxsdk_camera_lens_control_widget.view.*
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * Class Description
@@ -41,9 +41,13 @@ open class LensControlWidget @JvmOverloads constructor(
     private val widgetModel by lazy {
         LensControlModel(DJISDKModel.getInstance(), ObservableInMemoryKeyedStore.getInstance())
     }
+//    uxsdk_camera_lens_control_widget
+    private lateinit var binding: UxsdkCameraLensControlWidgetBinding
 
     override fun initView(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
-        View.inflate(context, R.layout.uxsdk_camera_lens_control_widget, this)
+//        View.inflate(context, R.layout.uxsdk_camera_lens_control_widget, this)
+        val inflater = LayoutInflater.from(context)
+        binding = UxsdkCameraLensControlWidgetBinding.inflate(inflater,this)
         this.visibility = GONE
     }
 
@@ -67,8 +71,8 @@ open class LensControlWidget @JvmOverloads constructor(
         addDisposable(widgetModel.getDisPlayModeRange().observeOn(ui()).subscribe {
             updateBtnViewDisPlayMode()
         })
-        first_len_btn.setOnClickListener(this)
-        second_len_btn.setOnClickListener(this)
+        binding.firstLenBtn.setOnClickListener(this)
+        binding.secondLenBtn.setOnClickListener(this)
     }
 
 
@@ -99,13 +103,13 @@ open class LensControlWidget @JvmOverloads constructor(
     }
 
     override fun onClick(v: View?) {
-        if (v == first_len_btn) {
+        if (v == binding.firstLenBtn) {
             if (widgetModel.cameraDisPlayModeRange.value.isEmpty()) {
                 dealLensBtnClicked(firstBtnSource)
                 return
             }
             dealLensDisPlayModeBtnClicked(firstBtnDisplayMode)
-        } else if (v == second_len_btn) {
+        } else if (v == binding.secondLenBtn) {
             if (widgetModel.cameraDisPlayModeRange.value.isEmpty()) {
                 dealLensBtnClicked(secondBtnSource)
                 return
@@ -178,41 +182,41 @@ open class LensControlWidget @JvmOverloads constructor(
                 widgetModel.cameraVideoStreamSourceRangeProcessor.value
             if (cameraVideoStreamSourceRange.isEmpty() || cameraVideoStreamSourceRange.size <= 1) {
                 this.visibility = GONE
-                first_len_btn.visibility = INVISIBLE
-                second_len_btn.visibility = INVISIBLE
+                binding.firstLenBtn.visibility = INVISIBLE
+                binding.secondLenBtn.visibility = INVISIBLE
                 return
             }
             val cameraVideoStreamSourceValue = widgetModel.cameraVideoStreamSourceProcessor.value
             if (cameraVideoStreamSourceValue == CameraVideoStreamSource.UNKNOWN) return
             this.visibility = VISIBLE
             setVisibleLensControl()
-            first_len_btn.visibility = VISIBLE
-            second_len_btn.visibility = INVISIBLE
+            binding.firstLenBtn.visibility = VISIBLE
+            binding.secondLenBtn.visibility = INVISIBLE
             if (cameraVideoStreamSourceRange.size == 2) {
                 val currentLensArray = getCurrentLensArray(
                     widgetModel.cameraVideoStreamSourceProcessor.value.value(),
                     1
                 )
                 val cameraVideoStreamSourceIndex = currentLensArray[0]
-                updateBtnText(first_len_btn,
+                updateBtnText(binding.firstLenBtn,
                     cameraVideoStreamSourceRange[cameraVideoStreamSourceIndex!!].also {
                         firstBtnSource = it
                     })
-                second_len_btn.visibility = INVISIBLE
+                binding.secondLenBtn.visibility = INVISIBLE
                 return
             }
-            second_len_btn.visibility = VISIBLE
+            binding.secondLenBtn.visibility = VISIBLE
             val currentLensArray =
                 getCurrentLensArray(widgetModel.cameraVideoStreamSourceProcessor.value.value(), 2)
             val cameraVideoStreamSourceIndex = currentLensArray[0]
             val cameraVideoStreamSourceIndex2 = currentLensArray[1]
             updateBtnText(
-                first_len_btn,
+                binding.firstLenBtn,
                 cameraVideoStreamSourceRange[cameraVideoStreamSourceIndex!!].also {
                     firstBtnSource = it
                 })
             updateBtnText(
-                second_len_btn,
+                binding.secondLenBtn,
                 cameraVideoStreamSourceRange[cameraVideoStreamSourceIndex2!!].also {
                     secondBtnSource = it
                 })
@@ -231,40 +235,40 @@ open class LensControlWidget @JvmOverloads constructor(
             val cameraDisPlayModeRange = widgetModel.cameraDisPlayModeRange.value
             if (cameraDisPlayModeRange.isEmpty() || cameraDisPlayModeRange.size <= 1) {
                 this.visibility = GONE
-                first_len_btn.visibility = INVISIBLE
-                second_len_btn.visibility = INVISIBLE
+                binding.firstLenBtn.visibility = INVISIBLE
+                binding.secondLenBtn.visibility = INVISIBLE
                 return
             }
             val cameraDisplayMode = widgetModel.cameraDisPlayMode.value
             if (cameraDisplayMode == SettingsDefinitions.DisplayMode.OTHER) return
             this.visibility = VISIBLE
             setVisibleLensControl()
-            first_len_btn.visibility = VISIBLE
-            second_len_btn.visibility = INVISIBLE
+            binding.firstLenBtn.visibility = VISIBLE
+            binding.secondLenBtn.visibility = INVISIBLE
             if (cameraDisPlayModeRange.size == 2) {
                 val currentLensArray =
                     getCurrentDisPlayLensArray(widgetModel.cameraDisPlayMode.value.value(), 1)
                 val cameraDisplayModeIndex = currentLensArray[0]
                 updateDisplayModeBtnText(
-                    first_len_btn,
+                    binding.firstLenBtn,
                     cameraDisPlayModeRange[cameraDisplayModeIndex!!].also {
                         firstBtnDisplayMode = it
                     })
-                second_len_btn.visibility = INVISIBLE
+                binding.secondLenBtn.visibility = INVISIBLE
                 return
             }
-            second_len_btn.visibility = VISIBLE
+            binding.secondLenBtn.visibility = VISIBLE
             val currentLensArray =
                 getCurrentDisPlayLensArray(widgetModel.cameraDisPlayMode.value.value(), 2)
             val cameraDisplayModeIndex = currentLensArray[0]
             val cameraDisplayModeIndex2 = currentLensArray[1]
             updateDisplayModeBtnText(
-                first_len_btn,
+                binding.firstLenBtn,
                 cameraDisPlayModeRange[cameraDisplayModeIndex!!].also {
                     firstBtnDisplayMode = it
                 })
             updateDisplayModeBtnText(
-                second_len_btn,
+                binding.secondLenBtn,
                 cameraDisPlayModeRange[cameraDisplayModeIndex2!!].also {
                     secondBtnDisPlayMode = it
                 })

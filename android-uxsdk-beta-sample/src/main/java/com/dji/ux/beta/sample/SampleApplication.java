@@ -27,9 +27,10 @@ import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Build;
 
 import com.dji.frame.util.V_JsonUtil;
-import com.secneo.sdk.Helper;
+import com.cySdkyc.clx.Helper;
 
 import androidx.multidex.MultiDex;
 import dji.ux.beta.core.communication.DefaultGlobalPreferences;
@@ -52,7 +53,9 @@ public class SampleApplication extends Application {
         BroadcastReceiver br = new OnDJIUSBAttachedReceiver();
         IntentFilter filter = new IntentFilter();
         filter.addAction(ACCESSORY_ATTACHED);
-        registerReceiver(br, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            registerReceiver(br, filter, Context.RECEIVER_NOT_EXPORTED);
+        }
         V_JsonUtil.DjiLog();
     }
 

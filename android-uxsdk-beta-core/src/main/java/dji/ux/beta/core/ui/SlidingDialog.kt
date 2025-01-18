@@ -388,14 +388,22 @@ class SlidingDialog @JvmOverloads constructor(
                     gravity: Int,
                     cancelable: Boolean,
                     cancelTouchOutside: Boolean) {
-        val attrs = window?.attributes
-        attrs?.width = width
-        attrs?.height = height
-        attrs?.y = yOffset
-        attrs?.flags = attrs?.flags?.and(WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv())
-        attrs?.gravity = gravity
-        window?.attributes = attrs
-        window?.setWindowAnimations(R.style.UXSDKDialogWindowAnim)
+        if (window != null){
+            val attrs = window?.attributes
+            if (attrs != null){
+                attrs.width = width
+                attrs.height = height
+                attrs.y = yOffset
+                var flags = attrs?.flags?.and(WindowManager.LayoutParams.FLAG_DIM_BEHIND.inv())
+                attrs.gravity = gravity
+                if (flags != null){
+                    attrs.flags = flags
+                }
+            }
+            window?.attributes = attrs
+            window?.setWindowAnimations(R.style.UXSDKDialogWindowAnim)
+        }
+
         setCancelable(cancelable)
         setCanceledOnTouchOutside(cancelTouchOutside)
     }

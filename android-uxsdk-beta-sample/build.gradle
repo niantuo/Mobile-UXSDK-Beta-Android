@@ -42,7 +42,7 @@ android {
             abiFilters 'armeabi-v7a', 'arm64-v8a'
         }
     }
-    viewBinding{
+    viewBinding {
         enabled = true
     }
     buildTypes {
@@ -54,10 +54,10 @@ android {
     dexOptions {
         javaMaxHeapSize "3g"
     }
-    lintOptions{
+    lintOptions {
         abortOnError false
     }
-    packagingOptions{
+    packagingOptions {
         doNotStrip "*/*/libdjivideo.so"
         doNotStrip "*/*/libSDKRelativeJNI.so"
         doNotStrip "*/*/libFlyForbid.so"
@@ -118,7 +118,6 @@ dependencies {
 
     // SDK dependencies
     implementation libs.androidx.lifecycle.extensions
-
 
 
     // Google maps

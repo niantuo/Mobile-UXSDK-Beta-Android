@@ -22,7 +22,12 @@
   ~
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <color name="colorAccent" tools:ignore="ResourceName">#FF4081</color>
+    <color name="colorPrimary" tools:ignore="ResourceName">#3F51B5</color>
+    <color name="colorPrimaryDark" tools:ignore="ResourceName">#303F9F</color>
+
     <color name="uxsdk_transparent">#00000000</color>
     <color name="uxsdk_background">#33ffffff</color>
 

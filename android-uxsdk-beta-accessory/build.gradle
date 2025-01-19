@@ -81,6 +81,7 @@ dependencies {
     implementation libs.androidx.media
 
     implementation libs.kotlin.jdk7
+    implementation libs.kotlin.jdk8
 }
 repositories {
     mavenLocal()

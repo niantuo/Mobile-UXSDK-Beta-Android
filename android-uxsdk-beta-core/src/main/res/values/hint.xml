@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fpv_tip_compass_error">指南针异常，请移动飞机或校准指南针</string>
+    <string name="fpv_tip_in_limit_space">Height Limited Zone</string>
+    <string name="fpv_tip_in_nfz_max_height_special_unlock">特殊解禁</string>
+</resources>

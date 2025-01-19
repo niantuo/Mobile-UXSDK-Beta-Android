@@ -35,3 +35,4 @@ lint.xml
 # Mac files
 .DS_Store
 
+.kotlin

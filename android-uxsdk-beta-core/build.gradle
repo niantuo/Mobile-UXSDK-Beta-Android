@@ -99,6 +99,7 @@ dependencies {
     api libs.toastcompat
 
     implementation libs.kotlin.jdk7
+    implementation libs.kotlin.jdk8
     api libs.androidx.core.ktx
     api libs.rxjava3.rxandroid
     api libs.rxjava3.rxjava

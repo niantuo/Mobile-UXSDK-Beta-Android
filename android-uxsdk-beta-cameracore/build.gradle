@@ -24,6 +24,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'maven-publish'
 
 android {
     lintOptions {
@@ -85,4 +86,17 @@ dependencies {
 }
 repositories {
     mavenLocal()
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                groupId = 'dji.ux.beta' //groupId 随便取，jitpack不会使用
+                artifactId = 'cameracore'  //test随便取,jitpack不会使用
+                version = '5.0' //随便取，jitpack不会使用
+            }
+        }
+    }
 }
